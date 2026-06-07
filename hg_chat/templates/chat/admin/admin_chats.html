@@ -1,0 +1,38 @@
+{% extends 'chat/admin/base.html' %}
+
+{% block content %}
+
+<h3 style="color:#1f2937; margin-bottom:20px;">💬 Chat Monitoring</h3>
+
+<table class="table table-hover align-middle">
+
+<tr>
+    <th>Sender</th>
+    <th>Receiver</th>
+    <th>Message</th>
+    <th>Timestamp</th>
+    <th>Action</th>
+</tr>
+
+{% for msg in messages %}
+<tr>
+    <td>{{ msg.sender.username }}</td>
+    <td>{{ msg.receiver.username }}</td>
+    <td>
+        <span title="{{ msg.message|truncatechars:100 }}">
+            {{ msg.message|truncatechars:30 }}
+        </span>
+    </td>
+    <td style="white-space: nowrap;">
+        <small>{{ msg.timestamp|date:"M d, H:i" }}</small>
+    </td>
+
+    <td>
+        <a href="{% url 'delete_message' msg.id %}" class="btn btn-danger btn-sm">Delete</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

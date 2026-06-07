@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box - Success</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8fafc;
+            color: #111827;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+        }
+        .btn-gold {
+            background: #f59e0b;
+            color: #111827;
+            font-weight: 700;
+        }
+        .btn-gold:hover {
+            background: #d97706;
+            color: #111827;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 text-center" style="width: 400px;">
+
+        <img src="{% static 'images/logo.png' %}" width="80" alt="Chat Box logo" class="mb-3">
+
+        <h3 class="text-success">🎉 Account Created!</h3>
+
+        <p>Your Chat Box ID is:</p>
+
+        <h2 style="color: gold;">{{ user_id }}</h2>
+
+        <p class="mt-3 text-warning">
+            ⚠️ Save this Chat Box ID. You need it to login.
+        </p>
+
+        <a href="{% url 'login' %}" class="btn btn-gold mt-3 w-100">
+            Go to Login
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

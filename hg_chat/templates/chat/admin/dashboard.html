@@ -1,0 +1,222 @@
+{% extends 'chat/admin/base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4" style="color:#1f2937; font-weight:700;">📊 Enterprise Analytics Dashboard</h2>
+
+<!-- ================= KPI CARDS ================= -->
+<div class="row g-3 mb-4">
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm" style="border-left: 4px solid #3b82f6;">
+<h6 style="color: #6b7280; font-weight:600;">👤 Users</h6>
+<h3 style="color: #1f2937; margin-top:8px;">{{ total_users }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm" style="border-left: 4px solid #0891b2;">
+<h6 style="color: #6b7280; font-weight:600;">💬 Messages</h6>
+<h3 style="color: #1f2937; margin-top:8px;">{{ total_messages }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm" style="border-left: 4px solid #ef4444;">
+<h6 style="color: #6b7280; font-weight:600;">🚨 Reports</h6>
+<h3 style="color: #1f2937; margin-top:8px;">{{ total_reports }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm" style="border-left: 4px solid #10b981;">
+<h6 style="color: #6b7280; font-weight:600;">📌 Status</h6>
+<h3 style="color: #1f2937; margin-top:8px;">{{ total_status }}</h3>
+</div>
+</div>
+
+</div>
+
+<!-- ================= CHART SECTION ================= -->
+<div class="row g-3">
+
+<!-- BAR -->
+<div class="col-md-6">
+<div class="card p-3">
+<h5 style="color:#1f2937; margin-bottom:20px;">📊 System Overview</h5>
+<canvas id="barChart"></canvas>
+</div>
+</div>
+
+<!-- DOUGHNUT -->
+<div class="col-md-6">
+<div class="card p-3">
+<h5 style="color:#1f2937; margin-bottom:20px;">🍩 Data Distribution</h5>
+<canvas id="doughnutChart"></canvas>
+</div>
+</div>
+
+<!-- LINE -->
+<div class="col-md-12">
+<div class="card p-3">
+<h5 style="color:#1f2937; margin-bottom:20px;">📈 Live Activity Trend</h5>
+<canvas id="lineChart"></canvas>
+</div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* ================= INITIAL DATA ================= */
+const baseData = JSON.parse('{{ stats_json|escapejs }}');
+
+/* ================= BAR CHART ================= */
+const barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Users','Messages','Reports','Status'],
+        datasets: [{
+            label: 'Count',
+            data: baseData,
+            backgroundColor: [
+                '#3b82f6',
+                '#0891b2',
+                '#ef4444',
+                '#10b981'
+            ],
+            borderRadius: 8,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            x: {
+                grid: { display: false }
+            }
+        }
+    }
+});
+
+/* ================= DOUGHNUT ================= */
+const doughnutChart = new Chart(document.getElementById('doughnutChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Users','Messages','Reports','Status'],
+        datasets: [{
+            data: baseData,
+            backgroundColor: [
+                '#3b82f6',
+                '#06b6d4',
+                '#8b5cf6',
+                '#10b981'
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        cutout: '65%',
+        animation: {
+            animateRotate: true,
+            duration: 1200
+        },
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { padding: 15, font: { size: 12, weight: '500' }, color: '#374151' }
+            }
+        }
+    }
+});
+
+/* ================= LINE CHART ================= */
+const lineChart = new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'System Activity',
+            data: [],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.08)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: { duration: 800 },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            x: {
+                grid: { display: false }
+            }
+        },
+        plugins: {
+            legend: { display: true, labels: { color: '#374151', font: { weight: '500' } } }
+        }
+    }
+});
+
+/* ================= WEB SOCKET ================= */
+const socket = new WebSocket(
+    "ws://" + window.location.host + "/ws/admin/dashboard/"
+);
+
+socket.onmessage = function(event){
+    const data = JSON.parse(event.data);
+
+    const values = [
+        data.users,
+        data.messages,
+        data.reports,
+        data.status
+    ];
+
+    /* update bar */
+    barChart.data.datasets[0].data = values;
+    barChart.update();
+
+    /* update doughnut */
+    doughnutChart.data.datasets[0].data = values;
+    doughnutChart.update();
+
+    /* update line */
+    const time = new Date().toLocaleTimeString();
+
+    lineChart.data.labels.push(time);
+    lineChart.data.datasets[0].data.push(
+        data.users + data.messages
+    );
+
+    if(lineChart.data.labels.length > 10){
+        lineChart.data.labels.shift();
+        lineChart.data.datasets[0].data.shift();
+    }
+
+    lineChart.update();
+};
+</script>
+
+{% endblock %}

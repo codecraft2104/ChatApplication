@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8fafc; 
+            color: #111827; 
+        }
+        .header {
+            border-bottom: 2px solid #f59e0b;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .contact-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .contact-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+            transform: translateY(-2px);
+        }
+        .contact-card a {
+            text-decoration: none;
+            color: #111827;
+        }
+        .contact-info {
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .contact-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        .contact-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #f59e0b;
+        }
+        .contact-details h6 {
+            margin: 0;
+            font-weight: bold;
+            color: #111827;
+        }
+        .contact-details p {
+            margin: 5px 0;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status-badge.expired {
+            background: #6c757d;
+        }
+        .status-badge.no-status {
+            background: #6c757d;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-view-status {
+            background: #f59e0b;
+            color: #111827;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-view-status:hover {
+            background: #d97706;
+        }
+        .btn-view-profile {
+            background: #e2e8f0;
+            color: #111827;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-view-profile:hover {
+            background: #cbd5e1;
+        }
+        .btn-gold {
+            background: #f59e0b;
+            color: #111827;
+            font-weight: bold;
+        }
+        .btn-gold:hover {
+            background: #d97706;
+            color: #111827;
+        }
+        .no-contacts {
+            text-align: center;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px dashed #f59e0b;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>👥 Contacts Status</h2>
+            <a href="{% url 'dashboard' %}" class="btn btn-gold btn-sm">← Back</a>
+        </div>
+    </div>
+
+    {% if contacts_with_status %}
+        {% for item in contacts_with_status %}
+        <div class="contact-card">
+            <div class="contact-info">
+                <div class="contact-left">
+                    <img src="{{ item.contact.profile.profile_pic.url }}" alt="{{ item.contact.username }}" class="contact-pic">
+                    <div class="contact-details">
+                        <h6>{{ item.saved_name }}</h6>
+                        <p>@{{ item.contact.username }}</p>
+                        <p>{{ item.contact.profile.full_name }}</p>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    {% if item.status and not item.status.is_expired %}
+                        <span class="status-badge">✅ Has Status</span>
+                        <a href="{% url 'view_status' item.status.id %}" class="btn-view-status">👁️ View Status</a>
+                    {% else %}
+                        <span class="status-badge no-status">No Active Status</span>
+                    {% endif %}
+                    <a href="{% url 'contact_profile' item.contact.id %}" class="btn-view-profile">📋 Profile</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-contacts">
+            <h5>📭 No Contacts Yet</h5>
+            <p>Add contacts to see their statuses here!</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-gold mt-3">Go to Dashboard</a>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

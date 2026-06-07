@@ -1,0 +1,21 @@
+{
+    "html.validate.scripts": false,
+    "html.validate.styles": false,
+    "html.validate.html": false,
+    "html.hint": false,
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": false,
+        "editor.validate": false
+    },
+    "files.associations": {
+        "*.html": "html"
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/db.sqlite3": true
+    },
+    "[django-html]": {
+        "editor.validate": false
+    }
+}

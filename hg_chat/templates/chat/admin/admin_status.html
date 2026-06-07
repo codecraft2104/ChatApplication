@@ -1,0 +1,99 @@
+{% extends 'chat/admin/base.html' %}
+
+{% block content %}
+
+<style>
+    .status-container {
+        width: 250px;
+        height: 350px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+    }
+
+    .status-media {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .status-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .status-content {
+        flex-grow: 1;
+        background: #f9fafb;
+    }
+
+    .status-footer {
+        padding: 12px;
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .status-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-color: #3b82f6;
+    }
+    
+    .status-footer p {
+        color: #1f2937;
+    }
+    
+    .status-footer small {
+        color: #6b7280;
+    }
+</style>
+
+<h3 style="color:#1f2937; margin-bottom:20px;">📸 User Status</h3>
+
+<div class="row">
+
+{% for s in statuses %}
+<div class="col-md-3 mb-4">
+
+    <div class="card status-card">
+        <div class="status-container status-content">
+            {% if ".mp4" in s.image.url %}
+                <video class="status-media" controls>
+                    <source src="{{ s.image.url }}">
+                </video>
+            {% else %}
+                <img src="{{ s.image.url }}" alt="{{ s.user.username }}'s status" class="status-media">
+            {% endif %}
+        </div>
+
+        <div class="status-footer text-center">
+            <p class="mb-2">
+                <strong>{{ s.user.username }}</strong><br>
+                <small>{{ s.created_at|date:"M d, H:i" }}</small>
+            </p>
+            
+            {% if s.text %}
+                <small class="d-block mb-2" style="color:#6b7280; font-style: italic;">
+                    "{{ s.text }}"
+                </small>
+            {% endif %}
+
+            <a href="{% url 'delete_status' s.id %}" class="btn btn-danger btn-sm w-100">Delete</a>
+        </div>
+    </div>
+
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'chat/admin/base.html' %}
+
+{% block content %}
+
+<h3 style="color:#1f2937; margin-bottom:20px;">👥 Groups</h3>
+
+<table class="table table-hover align-middle">
+
+<tr>
+    <th>Name</th>
+    <th>Admin</th>
+    <th>Members</th>
+    <th>Action</th>
+</tr>
+
+{% for g in groups %}
+<tr>
+    <td>{{ g.name }}</td>
+    <td>{{ g.admin.username }}</td>
+    <td>
+        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#membersModal{{ g.id }}">
+            👥 {{ g.members.count }} Members
+        </button>
+    </td>
+
+    <td>
+        <a href="{% url 'delete_group' g.id %}"
+           onclick="return confirm('Delete group?')"
+           class="btn btn-danger btn-sm">
+           Delete
+        </a>
+    </td>
+</tr>
+
+<!-- GROUP MEMBERS MODAL -->
+<div class="modal fade" id="membersModal{{ g.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border: 1px solid #e5e7eb;">
+            <div class="modal-header" style="border-bottom: 2px solid #e5e7eb; background:#f9fafb;">
+                <h5 class="modal-title" style="color:#1f2937;">👥 {{ g.name }} - Members</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close"></button>
+            </div>
+            <div class="modal-body" style="background:#ffffff;">
+                <div class="list-group">
+                    {% for member in g.members.all %}
+                        <div class="list-group-item" style="border: 1px solid #e5e7eb; border-radius:8px; margin-bottom:10px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ member.profile.profile_pic.url }}" alt="{{ member.username }}"
+                                     class="rounded-circle me-3" width="50" height="50">
+                                <div>
+                                    <h6 class="mb-0">{{ member.username }}</h6>
+                                    <small class="text-muted">{{ member.profile.email|default:"N/A" }}</small>
+                                </div>
+                            </div>
+                            {% if member == g.admin %}
+                                <span class="badge bg-warning text-dark">🔑 Admin</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">No members in this group</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer border-info">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+</table>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
