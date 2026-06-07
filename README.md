@@ -1,4 +1,4 @@
-<img width="360" height="671" alt="image" src="https://github.com/user-attachments/assets/fb36967e-38dc-4bae-8150-87cb9766398c" /># ChatApplication
+ChatApplication
 This chat application is messaging app to communicate with others like whatsapp and Email.
 "# ChatApplication" 
 
@@ -8,6 +8,7 @@ HG Chat Application Documentation
 HG Chat Application
 
 A real-time chat application developed using Django that enables users to register, log in, manage contacts, and exchange messages securely.
+
 
 2. Project Overview
 
@@ -29,6 +30,7 @@ Features
   
 *   Secure Authentication
 
+
 3. Technologies Used
    
 i.  Python	-  Backend Development
@@ -46,6 +48,7 @@ vi.  JavaScript  -	Client-side Interaction
 vii.  SQLite/MySQL  -	Database
 
 viii.  Git & GitHub  -	Version Control
+
 
 4. System Requirements
    
@@ -68,10 +71,12 @@ viii.  Git & GitHub  -	Version Control
   -  Dual Core Processor
     
   -  500 MB Free Disk Space
+
     
 5. Project Structure
 
-<img width="360" height="671" alt="image" src="https://github.com/user-attachments/assets/d05c92fa-7506-4dc0-b511-a8590f40359c" />
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/d05c92fa-7506-4dc0-b511-a8590f40359c" />
+
 
 6. Installation Steps
    
@@ -82,8 +87,13 @@ viii.  Git & GitHub  -	Version Control
     git clone https://github.com/yourusername/hg_chat.git
     
   Option B: Download ZIP
+  
     -  Open GitHub Repository.
-    -  Click Code.
-    -  Select Download ZIP.
-    -  Extract the ZIP file.
     
+    -  Click Code.
+    
+    -  Select Download ZIP.
+    
+    -  Extract the ZIP file.
+
+  
